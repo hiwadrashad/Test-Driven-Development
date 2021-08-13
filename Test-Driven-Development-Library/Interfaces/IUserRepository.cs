@@ -7,11 +7,13 @@ using Test_Driven_Development_Library.DTOs;
 
 namespace Test_Driven_Development_Library.Interfaces
 {
-    public interface IUserREpository
+    public interface IUserREpository<T> where T : User
     {
-        bool Validate(User user);
-        void Save(User user);
-        List<User> GetAll();
+        bool Validate(T user);
+        void Save(T user);
+        List<T> GetAll();
         public void OrderEmailAlphabetically();
+        public List<T> SaveAndReturnAll(ref Action<T> Save,ref Func<List<T>> GetAll, T user);
+        public (bool?, List<T>)? VerifyAndReturnAll(ref Func<T, bool> Verify, ref Func<List<T>> GetAll, T user);
     }
 }

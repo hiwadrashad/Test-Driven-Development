@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Test_Driven_Development_Library.DTOs;
 using Test_Driven_Development_Library.Interfaces;
 using Test_Driven_Devlopment_Database.Models;
 
@@ -13,9 +14,9 @@ namespace Test_Driven_Devlopment_Database.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private IUserREpository _userRepository;
+        private IUserREpository<User> _userRepository;
 
-        public HomeController(ILogger<HomeController> logger, IUserREpository userREpository)
+        public HomeController(ILogger<HomeController> logger, IUserREpository<User> userREpository)
         {
             _logger = logger;
             _userRepository = userREpository;

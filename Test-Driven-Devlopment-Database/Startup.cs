@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Test_Driven_Development_Library.Interfaces;
 using Test_Driven_Devlopment_Database.Repositories;
+using Test_Driven_Development_Library.DTOs;
 
 namespace Test_Driven_Devlopment_Database
 {
@@ -32,7 +33,7 @@ namespace Test_Driven_Devlopment_Database
             services.AddDbContext<UserDbContext>(options =>
             options.UseSqlServer(
             Configuration.GetConnectionString("DefaultConnection")));
-            services.AddScoped<IUserREpository, UserRepository>();
+            services.AddScoped<IUserREpository<User>, UserRepository<User>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -22,7 +22,7 @@ namespace Test_Driven_Devlopment_UnitTest.UnitTests
             //
             // mockrepository.Verify( a => a.Save(new User { Emailadress = "test@gmail.com", Id = 1, LastName = "LastName", Name = "Name" }), Times.Once);
 
-            var mockrepository = new Mock<IUserREpository>();
+            var mockrepository = new Mock<IUserREpository<User>>();
             mockrepository.Setup(a => a.Save(new User { Emailadress = "test@gmail.com", Id = 1, LastName = "LastName", Name = "Name" })).Verifiable();         
         }
 
@@ -30,7 +30,7 @@ namespace Test_Driven_Devlopment_UnitTest.UnitTests
 
         public void Amount_Of_DTOs_Input_Equals_Output_Check()
         {
-            var mockrepository = new Mock<IUserREpository>();
+            var mockrepository = new Mock<IUserREpository<User>>();
             mockrepository.Setup(a => a.GetAll()).Returns(new List<Test_Driven_Development_Library.DTOs.User> {
             new Test_Driven_Development_Library.DTOs.User { Id = 1, Emailadress = "testa@hotmail.com", LastName = "lastname", Name = "Name" },
             new Test_Driven_Development_Library.DTOs.User { Id = 2, Emailadress = "testc@hotmail.com", LastName = "lastname", Name = "Name" },
@@ -48,7 +48,7 @@ namespace Test_Driven_Devlopment_UnitTest.UnitTests
         [InlineData(3, "testx@hotmail.com")]
         public void Does_Sorting_Email_Alphabetically_Work(int index, string email)
         {
-            var mockrepository = new Mock<IUserREpository>();
+            var mockrepository = new Mock<IUserREpository<User>>();
             mockrepository.Setup(a => a.GetAll()).Returns(new List<Test_Driven_Development_Library.DTOs.User> {
             new Test_Driven_Development_Library.DTOs.User { Id = 1, Emailadress = "testa@hotmail.com", LastName = "lastname", Name = "Name" },
             new Test_Driven_Development_Library.DTOs.User { Id = 2, Emailadress = "testc@hotmail.com", LastName = "lastname", Name = "Name" },
@@ -65,6 +65,17 @@ namespace Test_Driven_Devlopment_UnitTest.UnitTests
             Assert.Equal(mockrepository.Object.GetAll()[index].Emailadress, email);
 
            
+        }
+
+        [Fact]
+
+        public void Save_And_Return_All_Method_Check()
+        {
+            var mockrepository = new Mock<IUserREpository<User>>();
+            Action<User> SaveInputACT = (User user) => mockrepository.Object.Save(new User {});
+            Func<List<User>> GetAllFUNC = () => mockrepository.Object.GetAll();
+            var ex = Record.Exception(() => mockrepository.Object.SaveAndReturnAll(ref SaveInputACT,ref GetAllFUNC, (new User { Id = 1, Emailadress = "test@gmail.com", LastName = "Lastname", Name = "Name" })));
+            Assert.Null(ex);
         }
     }
 }

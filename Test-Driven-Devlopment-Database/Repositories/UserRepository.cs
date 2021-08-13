@@ -8,7 +8,7 @@ using Test_Driven_Devlopment_Database.Database;
 
 namespace Test_Driven_Devlopment_Database.Repositories
 {
-    public class UserRepository : IUserREpository
+    public class UserRepository<T> : IUserREpository<T> where T : User
     {
         private readonly UserDbContext _userDbContext;
 
@@ -17,7 +17,7 @@ namespace Test_Driven_Devlopment_Database.Repositories
             _userDbContext = userDbcontext;
         }
 
-        public bool Validate(User user)
+        public bool Validate(T user)
         {
 
 
@@ -51,7 +51,7 @@ namespace Test_Driven_Devlopment_Database.Repositories
             _userDbContext.Users.OrderBy(a => a.Emailadress);
         }
 
-        public void Save(User user)
+        public void Save(T user)
         {
 
             if (Validate(user))
@@ -61,9 +61,54 @@ namespace Test_Driven_Devlopment_Database.Repositories
             }
         }
 
-        public List<User> GetAll()
+        public List<T> GetAll()
         {
-           return _userDbContext.Users.ToList();
+            if (typeof(T) == typeof(User))
+            {
+                return new List<T>(_userDbContext.Users.ToList().Cast<T>());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public List<T> SaveAndReturnAll(ref Action<T> Save,ref Func<List<T>> GetAll, T user)
+        {
+            try
+            {
+                Save?.Invoke(user);
+                var AllUsers = GetAll?.Invoke();
+                Save = null;
+                GetAll = null;
+                return AllUsers;
+            }
+#pragma warning disable CS0168 // Variable is declared but never used
+            catch (Exception ex)
+#pragma warning restore CS0168 // Variable is declared but never used
+            {
+                throw new ArgumentException("wrongvalue");
+            }
+        }
+
+        public (bool?, List<T>)? VerifyAndReturnAll(ref Func<T, bool> Verify, ref Func<List<T>> GetAll, T user)
+        {
+            try
+            {
+                bool? Verified = Verify?.Invoke(user);
+                List<T> AllUsers = GetAll();
+                Verify = null;
+                GetAll = null;
+                (bool?, List<T>) ReturnTPL = (Verified, AllUsers);
+                return ReturnTPL;
+
+            }
+#pragma warning disable CS0168 // Variable is declared but never used
+            catch (Exception ex)
+#pragma warning restore CS0168 // Variable is declared but never used
+            {
+                return null;
+            }
         }
 
 
