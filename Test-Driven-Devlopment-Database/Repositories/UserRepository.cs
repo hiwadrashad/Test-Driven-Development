@@ -96,7 +96,7 @@ namespace Test_Driven_Devlopment_Database.Repositories
             try
             {
                 bool? Verified = Verify?.Invoke(user);
-                List<T> AllUsers = GetAll();
+                List<T> AllUsers = GetAll?.Invoke();
                 Verify = null;
                 GetAll = null;
                 (bool?, List<T>) ReturnTPL = (Verified, AllUsers);
